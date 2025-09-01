@@ -10,12 +10,14 @@ public class StartController(ILogger<StartController> logger, PulsarProducer pro
     [HttpPost]
     public async Task<IActionResult> SendMessage([FromBody] Request request)
     {
-        if (string.IsNullOrEmpty(request.Message)) return BadRequest("Message can't be null or empty");
-        
-        logger.LogInformation("Get started");
+        if (string.IsNullOrEmpty(request.Message))
+        {
+            logger.LogError("Message is null or empty");
+            return BadRequest("Message can't be null or empty");
+        }
 
         await producer.ProduceAsync(request.Message);
         
-        return Ok();
+        return Ok("Sent!");
     }
 }

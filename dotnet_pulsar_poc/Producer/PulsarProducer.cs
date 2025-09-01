@@ -24,7 +24,7 @@ public class PulsarProducer(IPulsarClient pulsarClient, ILogger<PulsarProducer> 
 
         var msg = Encoding.UTF8.GetBytes(message);
         
-        logger.LogInformation("Sending message {}", message);
+        logger.LogInformation("Sending message {message}", message);
 
         await producer.NewMessage().Send(msg);
     }

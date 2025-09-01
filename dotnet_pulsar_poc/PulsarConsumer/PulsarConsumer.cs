@@ -11,15 +11,6 @@ public class PulsarConsumer(ILogger<PulsarConsumer> logger, IPulsarClient pulsar
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Consume(stoppingToken);
-            await Task.Delay(500, stoppingToken);
-        }
-    }
-
-    private async Task Consume(CancellationToken stoppingToken)
-    {
         logger.LogInformation("Consuming pulsar events from {} position", 
             Enum.Parse<SubscriptionInitialPosition>(pulsarSettings.InitialPosition));
         
@@ -34,16 +25,16 @@ public class PulsarConsumer(ILogger<PulsarConsumer> logger, IPulsarClient pulsar
                 logger.LogInformation("The reader for topic '{ConsumerTopic}' changed state to '{StateChangedConsumerState}'",
                     stateChanged.Consumer.Topic,
                     stateChanged.ConsumerState);
-            }) // not required
+            }, cancellationToken: stoppingToken) // not required
             .Create();
 
         await foreach (var message in consumer.Messages().WithCancellation(stoppingToken))
         {
             var msgString = Encoding.UTF8.GetString(message.Value()); // converting from byte[]
             
-            logger.LogInformation($"Received message: {msgString}");
+            logger.LogInformation("Received message: {msgString}", msgString);
             
-            await consumer.Acknowledge(message.MessageId);
+            await consumer.Acknowledge(message.MessageId, stoppingToken);
         }
     }
 }
