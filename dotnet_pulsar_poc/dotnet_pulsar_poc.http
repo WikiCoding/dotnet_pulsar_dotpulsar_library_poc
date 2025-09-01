@@ -1,0 +1,6 @@
+@dotnet_pulsar_poc_HostAddress = http://localhost:5259
+
+GET {{dotnet_pulsar_poc_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
