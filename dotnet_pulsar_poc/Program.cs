@@ -25,7 +25,6 @@ var pulsarClient = PulsarClient
 
 builder.Services.AddSingleton(pulsarClient);
 builder.Services.AddScoped<PulsarProducer>();
-// builder.Services.AddScoped<PulsarConsumer>();
 builder.Services.AddHostedService<PulsarConsumer>();
 
 var app = builder.Build();

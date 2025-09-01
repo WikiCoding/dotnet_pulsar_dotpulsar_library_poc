@@ -28,7 +28,7 @@ public class PulsarConsumer(ILogger<PulsarConsumer> logger, IPulsarClient pulsar
             }, cancellationToken: stoppingToken) // not required
             .Create();
 
-        await foreach (var message in consumer.Messages().WithCancellation(stoppingToken))
+        await foreach (var message in consumer.Messages(stoppingToken))
         {
             var msgString = Encoding.UTF8.GetString(message.Value()); // converting from byte[]
             
